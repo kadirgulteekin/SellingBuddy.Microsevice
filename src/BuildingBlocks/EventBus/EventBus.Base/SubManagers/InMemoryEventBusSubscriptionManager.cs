@@ -26,7 +26,7 @@ namespace EventBus.Base.SubManagers
         public bool IsEmpty => !_handlers.Keys.Any();
         public void Clear() => _handlers.Clear();
 
-        public void AddSubscription<T, TH>() where T : IntegrationEvents where TH : IIntegrationHandler<T>
+        public void AddSubscription<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
         {
             var eventName = GetEventKey<T>();
 
@@ -54,7 +54,7 @@ namespace EventBus.Base.SubManagers
         }
 
 
-        public void RemovedSubscription<T, TH>() where TH : IIntegrationHandler<T> where T : IntegrationEvents
+        public void RemovedSubscription<T, TH>() where TH : IIntegrationEventHandler<T> where T : IntegrationEvent
         {
             var handlerToRemove = FindSubscriptionToRemove<T, TH>();
             var eventName = GetEventKey<T>();
@@ -82,7 +82,7 @@ namespace EventBus.Base.SubManagers
             }
         }
 
-        public IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IntegrationEvents
+        public IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IntegrationEvent
         {
             var key = GetEventKey<T>();
             return GetHandlersForEvent(key);
@@ -96,7 +96,7 @@ namespace EventBus.Base.SubManagers
             handler?.Invoke(this, eventName);
         }
 
-        private SubscriptionInfo FindSubscriptionToRemove<T, TH>() where T : IntegrationEvents where TH : IIntegrationHandler<T>
+        private SubscriptionInfo FindSubscriptionToRemove<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
         {
             var eventName = GetEventKey<T>();
             return FindSubscriptionToRemove(eventName, typeof(TH));
@@ -112,7 +112,7 @@ namespace EventBus.Base.SubManagers
             return _handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType);
         }
 
-        public bool HasSubscriptionForEvent<T>() where T : IntegrationEvents
+        public bool HasSubscriptionForEvent<T>() where T : IntegrationEvent
         {
             var key = GetEventKey<T>();
 
@@ -123,7 +123,7 @@ namespace EventBus.Base.SubManagers
 
         public Type GetEventTypeByName(string eventName) => _eventTypes.SingleOrDefault(t => t.Name == eventName);
 
-        public string GetEventKey<T>() where T : IntegrationEvents
+        public string GetEventKey<T>() where T : IntegrationEvent
         {
             string eventName = typeof(T).Name;
             return eventNameGetter(eventName);

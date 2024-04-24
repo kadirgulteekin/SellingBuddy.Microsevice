@@ -11,15 +11,15 @@ namespace EventBus.Base.Abstraction
     {
         bool IsEmpty { get; }
         event EventHandler<string> OnEventRemoved;
-        void AddSubscription<T,TH>() where T : IntegrationEvents where TH: IIntegrationHandler<T>;
-        void RemovedSubscription<T, TH>() where TH : IIntegrationHandler<T> where T : IntegrationEvents;
-        bool HasSubscriptionForEvent<T>() where T:IntegrationEvents;
+        void AddSubscription<T,TH>() where T : IntegrationEvent where TH: IIntegrationEventHandler<T>;
+        void RemovedSubscription<T, TH>() where TH : IIntegrationEventHandler<T> where T : IntegrationEvent;
+        bool HasSubscriptionForEvent<T>() where T:IntegrationEvent;
         bool HasSubscriptionForEvent(string eventName);
         Type GetEventTypeByName(string eventName);
         void Clear();
-        IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IntegrationEvents;
+        IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IntegrationEvent;
         IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName);
-        string GetEventKey<T>() where T : IntegrationEvents;
+        string GetEventKey<T>() where T : IntegrationEvent;
 
 
     }

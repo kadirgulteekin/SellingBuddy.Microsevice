@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EventBus.Base.Events
 {
-    public class IntegrationEvents
+    public class IntegrationEvent
     {
         [JsonProperty]
 
@@ -15,14 +15,14 @@ namespace EventBus.Base.Events
         [JsonProperty]
         public DateTime CreadtedDate { get; private set; }
 
-        public IntegrationEvents()
+        public IntegrationEvent()
         {
             Id = Guid.NewGuid();
             CreadtedDate = DateTime.Now;
         }
 
         [JsonConstructor]
-        public IntegrationEvents(Guid id, DateTime createdDate)
+        public IntegrationEvent(Guid id, DateTime createdDate)
         {
                 Id = id;
                 CreadtedDate = createdDate;
