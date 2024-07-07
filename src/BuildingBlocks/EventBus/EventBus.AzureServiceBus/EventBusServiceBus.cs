@@ -23,6 +23,7 @@ namespace EventBus.AzureServiceBus
         {
             _managementClient = new ManagementClient(config.EventBusConnectionString);
             _topicClient = (ITopicClient)createTopicClient();
+            _config = config;
             _logger = serviceProvider.GetService(typeof(ILogger<EventBusServiceBus>)) as ILogger<EventBusServiceBus>;
         }
 
@@ -32,18 +33,21 @@ namespace EventBus.AzureServiceBus
             {
                 _topicClient = new TopicClient(_config.EventBusConnectionString, _config.DefaultTopicName, RetryPolicy.Default);
             }
+            //Ensure that already exist
             if (!await _managementClient.TopicExistsAsync(_config.DefaultTopicName))
                 await _managementClient.CreateTopicAsync(_config.DefaultTopicName);
 
             return _topicClient;
         }
 
+        //Send message to Azure ServiceBus
         public override void Publish(IntegrationEvent @event)
         {
-            var evenetName = @event.GetType().Name;
+            var evenetName = @event.GetType().Name; // example :  orderCreatedIntegrationEvent
 
-            evenetName = ProcessEventName(evenetName);
+            evenetName = ProcessEventName(evenetName); // example: OrderCreated
             var eventStr = JsonConvert.SerializeObject(@event);
+
             var bodyArr = Encoding.UTF8.GetBytes(eventStr);
 
             var message = new Message()
@@ -65,6 +69,7 @@ namespace EventBus.AzureServiceBus
                 var subsCriptionClient = CreateSubscriptionClientIfNotExist(eventName);
 
                  RegisterSubscriptionClientMessageHandler(subsCriptionClient);
+                
 
             }
         }
